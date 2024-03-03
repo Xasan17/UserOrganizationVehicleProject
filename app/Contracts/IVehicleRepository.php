@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 interface IVehicleRepository
 {
     public function getVehicleById(int $vehicleId):?Vehicle;
-//   public function createOrganization(VehicleDTO $vehicleDTO):Vehicle;
-//    public function updateOrganization(int $vehicleId,VehicleDTO $vehicleDTO):?Organization;
+  public function createVehicle(VehicleDTO $vehicleDTO):Vehicle;
+    public function updateVehicle(int $vehicleId,VehicleDTO $vehicleDTO):?Vehicle;
+    public function getExistOrganizationById(string $id):?Vehicle;
 }

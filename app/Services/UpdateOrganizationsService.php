@@ -13,7 +13,7 @@ class UpdateOrganizationsService
 
     }
 
-    public function updateUserService(int $userId, OrganizationDTO $OrganizationDTO): Organization
+    public function updateOrganizationService(int $organizationId, OrganizationDTO $OrganizationDTO): Organization
     {
-        return $this->repository->updateOrganization($userId);}
+        return $this->repository->updateOrganization($organizationId,$OrganizationDTO);}
 }

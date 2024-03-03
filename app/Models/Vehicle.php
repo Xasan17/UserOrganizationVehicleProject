@@ -16,8 +16,12 @@ class Vehicle extends Model
         'company',
         'organization_id'
     ];
-    public function fuelsensors(): HasMany
+    public function organization()
     {
-        return $this->hasMany(FuelSensor::class);
+      return $this->belongsTo(Organization::class,'organization_id','id');
+    }
+    public function fuelSensors(): HasMany
+    {
+        return $this->hasMany(FuelSensor::class,'vehicle_id','id');
     }
 }

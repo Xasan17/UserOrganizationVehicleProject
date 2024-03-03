@@ -27,6 +27,7 @@ class StoreVehicleRequest extends FormRequest
             'name' => 'required|string|max:50',
             'type' => 'required|string|max:50',
             'company'=>'required|string|max:50',
+            'organizationName'=>'required|string|max:50'
         ];
     }
 }

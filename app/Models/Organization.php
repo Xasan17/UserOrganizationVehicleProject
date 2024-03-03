@@ -28,6 +28,6 @@ return $this->belongsToMany(User::class);
     }
     public function vehicles(): hasMany
     {
-        return $this->hasMany(Vehicle::class);
+        return $this->hasMany(Vehicle::class,'organization_id','id');
     }
 }

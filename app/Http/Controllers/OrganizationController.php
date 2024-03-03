@@ -60,10 +60,9 @@ class OrganizationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateOrganizationRequest $request,int $organizationId,UpdateOrganizationsService $updateOrganizationsService)
-    {  $this->updateOrganizationsService=$updateOrganizationsService;
-        $validated=$request->validated();
-        $organization=$this->updateOrganizationsService->updateOrganization($organizationId,OrganizationDTO::fromArray($validated)) ;
+    public function update(UpdateOrganizationRequest $request,int $organizationId)
+    {   $validated=$request->validated();
+        $organization=$this->updateOrganizationsService->updateOrganizationService($organizationId,OrganizationDTO::fromArray($validated)) ;
         return new OrganizationResource($organization);
     }
 

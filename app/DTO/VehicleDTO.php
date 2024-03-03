@@ -7,10 +7,15 @@ class VehicleDTO
     private string $name,
     private string $type,
     private string $company,
-    private int $organization_id )
+private string $organizationName)
 {
 
 }
+
+    public function getOrganizationName(): string
+    {
+        return $this->organizationName;
+    }
 
     public function getName(): string
     {
@@ -27,15 +32,11 @@ class VehicleDTO
         return $this->company;
     }
 
-    public function getOrganizationId(): int
-    {
-        return $this->organization_id;
-    }
     public static function fromArray(array $data):VehicleDTO
     {return new VehicleDTO(
         name: $data['name'],
         type:$data['type'],
         company: $data['company'],
-        organization_id:$data['organization_id']
+        organizationName: $data['organizationName']
     );}
 }

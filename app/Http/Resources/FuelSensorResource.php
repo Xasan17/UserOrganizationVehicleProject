@@ -17,6 +17,10 @@ class FuelSensorResource extends JsonResource
         return [
             'id'=> $this -> resource->id,
             'name'=> $this->resource->name,
-            'vehicle_id'=>$this->resource->vehicle_id,];
+            'vehicle_id'=>$this->resource->vehicle_id,
+            'vehicle'=>$this->whenLoaded('vehicle',function (){
+                return $this->resource->vehicle->toArray();
+            }),
+            ];
     }
 }

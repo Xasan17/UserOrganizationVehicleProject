@@ -12,4 +12,8 @@ class FuelSensor extends Model
         'name',
         'vehicle_id'
     ];
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class,'vehicle_id','id');
+    }
 }

@@ -3,20 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\IVehicleRepository;
+use App\DTO\VehicleDTO;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
 use App\Http\Resources\VehicleResource;
 use App\Models\Organization;
 use App\Models\Vehicle;
 use App\Repository\VehicleRepository;
+use App\Services\CreateVehiclesService;
+use App\Services\UpdateVehiclesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
     private IVehicleRepository $repository;
-    public function __construct()
-    {
+    public function __construct(UpdateVehiclesService $updateVehiclesService)
+    {   $this->updateVehiclesService=$updateVehiclesService;
         $this->repository= new VehicleRepository();
     }
     /**
@@ -24,9 +27,9 @@ class VehicleController extends Controller
      */
     public function index():JsonResponse
     {
-        $vehicles= Vehicle::all();
+        $organizations=Organization::with('vehicles')->get();
         return response()->json([
-            'data'=>$vehicles
+            'data'=>$organizations
         ]);
     }
 
@@ -41,17 +44,11 @@ class VehicleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreVehicleRequest $request, Organization $organization):JsonResponse
-    {/**
-     *
-    */
-        if (!$organization) {
-            return response()->json(['message' => 'Организация не найдена'], 404);
-        }
-
-        $vehicle = $organization->vehicles()->create($request->validated());
-
-        return response()->json($vehicle, 201);
+    public function store(StoreVehicleRequest $request, CreateVehiclesService $services):VehicleResource
+    {
+        $validated=$request->validated();
+        $vehicle=$services->execute(VehicleDTO:: fromArray($validated));
+        return new VehicleResource($vehicle);
     }
 
     /**
@@ -59,7 +56,6 @@ class VehicleController extends Controller
      */
     public function show(string $id):VehicleResource
     {$vehicle=$this->repository->getVehicleById($id);
-        $vehicle = Vehicle::query()->find($id);
         return new VehicleResource($vehicle);
     }
 
@@ -74,16 +70,11 @@ class VehicleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateVehicleRequest $request, Vehicle $vehicle):JsonResponse
+    public function update(UpdateVehicleRequest $request, int $vehicleId):VehicleResource
     {
-
-        if (!$vehicle) {
-            return response()->json(['message' => 'Транспортное средство не найдено'], 404);
-        }
-        $vehicle->update($request->validated());
-
-
-        return response()->json($vehicle->refresh(), 200);
+        $validated=$request->validated();
+        $vehicle=$this->updateVehiclesService->updateVehiclesService($vehicleId,VehicleDTO::fromArray($validated)) ;
+        return new VehicleResource($vehicle);
     }
 
 

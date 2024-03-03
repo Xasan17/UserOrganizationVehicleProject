@@ -26,7 +26,7 @@ class UpdateVehicleRequest extends FormRequest
             'name' => 'required|string|max:50',
             'type' => 'required|string|max:50',
             'company'=>'required|string|max:50',
-            'organization_id'=>'required|int'
+            'organizationName'=>'required|string|max:50'
         ];
     }
 }

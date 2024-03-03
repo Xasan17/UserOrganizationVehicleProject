@@ -23,7 +23,7 @@ class UpdateFuelSensorRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:50',
-            'vehicle_id' => 'required|int',
+            'vehicleId' => 'required|int',
         ];
     }
 }

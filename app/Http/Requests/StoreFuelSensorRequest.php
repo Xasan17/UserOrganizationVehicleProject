@@ -22,8 +22,8 @@ class StoreFuelSensorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'=>'required|int',
-            'name' => 'required|string|max:50'
+            'name' => 'required|string|max:50',
+            'vehicleName'=>'required|string|max:50'
         ];
     }
 }

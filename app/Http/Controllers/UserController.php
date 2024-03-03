@@ -57,7 +57,7 @@ $this->repository=new UserRepository();
 
     public function update(UserRequest $request,int $userId ):UserResource
     {
-        $validated=$request->validated();
+            $validated=$request->validated();
             $user = $this->updateUsersService->updateUsersService($userId, UserDTO::fromArray($validated));
             return new UserResource($user);
     }

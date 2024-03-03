@@ -2,25 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\IFuelSensorRepository;
+use App\DTO\FuelSensorDTO;
 use App\Http\Requests\StoreFuelSensorRequest;
 use App\Http\Requests\UpdateFuelSensorRequest;
 use App\Http\Resources\FuelSensorResource;
 use App\Models\FuelSensor;
 use App\Models\Vehicle;
+use App\Repository\FuelSensorRepository;
+use App\Services\CreateFuelSensorsService;
+use App\Services\UpdateFuelSensorsService;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FuelSensorController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
+{private IFuelSensorRepository $repository;
+   public function __construct(
+       UpdateFuelSensorsService $updateFuelSensorsService
+   )
+   {
+       $this->updateFuelSensorsService=$updateFuelSensorsService;
+       $this->repository= new FuelSensorRepository();
+   }
     public function index():JsonResponse
     {
-        $FuelSensor= FuelSensor::all();
+        $vehicles=Vehicle::with('fuelSensors')->get();
         return response()->json([
-            'data'=>$FuelSensor
+            'data'=>$vehicles
         ]);
     }
 
@@ -35,16 +44,11 @@ class FuelSensorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFuelSensorRequest $request,Vehicle $vehicles):JsonResponse
+    public function store(StoreFuelSensorRequest $request, CreateFuelSensorsService $services):FuelSensorResource
     {
-        if (!$vehicles) {
-            return response()->json(['message' => 'Транспортное средство не найдено'], 404);
-        }
-
-        /** @var array $FuelSensors */
-        $FuelSensor = $vehicles->fuelsensors()->create($request->validated());
-
-        return response()->json($FuelSensor, 201);
+        $validated=$request->validated();
+        $vehicle=$services->execute(FuelSensorDTO:: fromArray($validated));
+        return new FuelSensorResource($vehicle);
     }
 
     /**
@@ -52,8 +56,8 @@ class FuelSensorController extends Controller
      */
     public function show(string $id):FuelSensorResource
     {
-        $FuelSensor = FuelSensor::query()->find($id);
-        return new FuelSensorResource($FuelSensor);
+        $fuelSensor=$this->repository->getFuelSensorById($id);
+        return new FuelSensorResource($fuelSensor);
     }
 
     /**
@@ -67,16 +71,11 @@ class FuelSensorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFuelSensorRequest $request, FuelSensor $FuelSensor):JsonResponse
+    public function update(UpdateFuelSensorRequest $request, int $fuelSensorId):FuelSensorResource
     {
-        if (!$FuelSensor) {
-            return response()->json(['message' => 'Fuel sensor not found'], 404);
-        }
-        $FuelSensor->update($request->validated());
-
-
-        return response()->json($FuelSensor->refresh(), 200);
-
+        $validated=$request->validated();
+        $fuelSensor=$this->updateFuelSensorsService->updateFuelSensorsService($fuelSensorId,FuelSensorDTO::fromArray($validated)) ;
+        return new FuelSensorResource($fuelSensor);
     }
 
     /**

@@ -19,7 +19,10 @@ class VehicleResource extends JsonResource
             'name'=> $this->resource->name,
             'type'=>$this->resource->type,
             'company'=>$this->resource->company,
-            'organization_id'=>$this->resource->organization_id
+            'organization_id'=>$this->resource->organization_id,
+            'organization'=>$this->whenLoaded('organization',function (){
+                return $this->resource->organization->toArray();
+            }),
         ];
     }
 }
